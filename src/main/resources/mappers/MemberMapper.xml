@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.javawspring.dao.MemberDAO">
+	<select id="getMemberIdCheck" resultType="com.spring.javawspring.vo.MemberVO">
+		select * from member2 where mid=#{mid};
+	</select>
+	<select id="getMemberNickNameCheck" resultType="com.spring.javawspring.vo.MemberVO">
+		select * from member2 where nickName=#{nickName};
+	</select>
+	<select id="totRecCnt" resultType="int">
+		select count(*) from member2;
+	</select>
+	<select id="getMemberList" resultType="com.spring.javawspring.vo.MemberVO">
+		select * from member2 order by idx desc limit #{startIndexNo},#{pageSize};
+	</select>
+	<select id="totTermRecCnt" resultType="int">
+			select count(*) from member2 <if test ="mid!=''">where mid like concat('%',#{mid},'%')</if>	;
+	</select>
+	<select id="getTermMemberList" resultType="com.spring.javawspring.vo.MemberVO">
+	<!--
+		<if test="mid ==''">
+			select * from member2 order by idx desc limit #{startIndexNo},#{pageSize};
+		</if>
+		<if test ="mid!=''">
+			select * from member2 where mid like concat('%',#{mid},'%') order by idx desc limit #{startIndexNo},#{pageSize};
+		</if>
+	-->	
+			select * from member2 <if test ="mid!=''">where mid like concat('%',#{mid},'%')</if> order by idx desc limit #{startIndexNo},#{pageSize};
+	</select>
+	
+	
+	
+	
+<!-- 	<update id="setTodayCntUpdate">
+		update member2 set todayCnt=0 where mid=#{mid};
+	</update> -->
+	<update id="setMemTotalUpdate">
+		update member2 set lastDate=now(),todayCnt=#{todayCnt},visitCnt=visitCnt+1,point=#{nowTodayPoint} where mid=#{mid};
+	</update>
+	
+	<insert id="setMemberJoinOk">
+		insert into member2 values(default,#{vo.mid},#{vo.pwd},#{vo.nickName},#{vo.name},#{vo.gender},#{vo.birthday},#{vo.tel},#{vo.address},#{vo.email},#{vo.homePage},#{vo.job},#{vo.hobby},#{vo.photo},#{vo.content},#{vo.userInfor},default,default,default,default,default,default,default); 
+	</insert>
+</mapper>

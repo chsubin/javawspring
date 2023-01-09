@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+	<resources mapping="/js/**" location="/resources/js/" />
+	<resources mapping="/font/**" location="/resources/font/" />
+	<resources mapping="/css/**" location="/resources/css/" />
+	<resources mapping="/resources/**" location="/resources/" />
+	<resources mapping="/images/**" location="/resources/images/" />
+	<resources mapping="/baord/**" location="/resources/board/" />
+	<resources mapping="/pds/**" location="/resources/pds/" />
+	<resources mapping="/member/**" location="/resources/member/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	<context:component-scan base-package="com.spring.javawspring" />
+	
+	<!-- BCryptPasswordEncoder 객체를 위한 Bean 등록 -->
+	<beans:bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+	
+	<!-- interceptor 설정 -->
+	<beans:bean id="level4Interceptor" class="com.spring.javawspring.interceptor.Level4Interceptor"/> <!-- 비회원 불허 -->
+	<beans:bean id="level3Interceptor" class="com.spring.javawspring.interceptor.Level3Interceptor"/> <!-- 비회원/준회원 불허 -->
+	<beans:bean id="level0Interceptor" class="com.spring.javawspring.interceptor.Level0Interceptor"/> <!--관리자만 가능 -->
+	<interceptors>
+		<interceptor>
+			<mapping path="/member/**"/>
+			<exclude-mapping path="/member/memberList"/>
+			<exclude-mapping path="/member/memberLogin"/>
+			<exclude-mapping path="/member/memberLogOut"/>
+			<exclude-mapping path="/member/memberJoin"/>
+			<exclude-mapping path="/member/memberIdCheck"/>
+			<exclude-mapping path="/member/memberNickNameCheck"/>
+			<beans:ref bean="level4Interceptor"/>
+		</interceptor>
+		<interceptor>
+			<mapping path="/board/boardList"/>
+			<mapping path="/member/memberList"/>
+			<beans:ref bean="level3Interceptor"/>
+		</interceptor>
+		<interceptor>
+			<mapping path="/admin/**"/>
+			<beans:ref bean="level0Interceptor"/>
+		</interceptor>
+	</interceptors>
+	
+</beans:beans>
