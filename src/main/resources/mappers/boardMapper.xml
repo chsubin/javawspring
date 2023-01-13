@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.javawspring.dao.BoardDAO">
+	<select id="getBoardList" resultType="com.spring.javawspring.vo.BoardVO">
+		select *,datediff(now(), wDate) as day_diff,timestampdiff(hour, wDate, now()) as hour_diff,(SELECT count(*)	FROM boardReply2 WHERE boardIdx=b.idx) as replyCount from board2 b order by idx desc limit #{startIndexNo},#{pageSize};
+	</select>
+	<select id="getBoardSearch" resultType="com.spring.javawspring.vo.BoardVO">
+		select * from board2 where ${search} like concat('%',#{searchString},'%') order by idx desc limit #{startIndexNo},#{pageSize};
+	</select>
+	<select id="totRecCnt" resultType="int">
+		select count(*) from board2;
+	</select>
+	<select id="totSearchCnt" resultType="int">
+		select count(*) from board2 where ${search} like concat('%',#{searchString},'%');
+	</select>
+	<select id="getBoardContent" resultType="com.spring.javawspring.vo.BoardVO">
+		select * from board2 where idx =#{idx};
+	</select>
+	<select id="getBoardGoodCheck" resultType="com.spring.javawspring.vo.GoodVO">
+		select * from good where partIdx =#{partIdx} and part =#{part} and mid=#{mid};
+	</select>
+	<!-- <![CDATA[idx < #{idx}]]> -->
+	<select id="getPrevNext" resultType="com.spring.javawspring.vo.BoardVO">
+		select idx,title from board2 where idx in (
+		(select idx from board2 where <![CDATA[idx < #{idx}]]> order by idx desc limit 1),
+		(select idx from board2 where <![CDATA[idx > #{idx}]]> limit 1));
+	</select>
+  <select id="getBoardReply" resultType="com.spring.javawspring.vo.BoardReplyVO">
+  	select * from boardReply2 where boardIdx = #{idx} order by levelOrder;
+  </select>
+	<select id="getMaxLevelOrder" resultType="String">
+		select max(levelOrder) from boardReply2 where boardIdx=#{boardIdx};
+	</select>
+	<select id="getNewBoardCount" resultType="int">
+		select count(*) from board2 where wDate>=#{today};
+	</select>
+	
+	<update id="setBoardReadNum">
+		update board2 set readNum=readNum+1 where idx =#{idx};
+	</update>
+	
+	 <update id="setBoardGoodPlus">
+  	update  board2 set good = good + 1 where idx = #{idx};
+  </update>
+  
+  <update id="setGoodPlusMinus">
+  	update  board2 set good = good + #{goodCnt} where idx = #{idx};
+  </update>
+  
+  <update id="boardGoodFlagCheck">
+  	update  board2 set good = good + #{gFlag} where idx = #{idx};
+  </update>
+  
+  <update id="setBoardUpdateOk">
+  	update  board2 set title= #{vo.title},email= #{vo.email},homePage= #{vo.homePage},content= #{vo.content},hostIp= #{vo.hostIp} where idx = #{vo.idx};
+  </update>
+  <update id="boardGoodDbCheck">
+		update good set goodSw=#{vo.goodSw} where mid=#{vo.mid} and part=#{vo.part} and partIdx=#{vo.partIdx};
+  </update>
+  <update id="setLevelOrderPlusUpdate">
+  	 update  boardReply2 set levelOrder = levelOrder + 1  where boardIdx = #{replyVo.boardIdx} and levelOrder > #{replyVo.levelOrder};
+  </update>
+  <update id="setBoardReplyUpdate">
+  	 update  boardReply2 set content=#{content} where idx=#{idx};
+  </update>
+  
+	
+	<insert id="setBoardInput">
+		insert into board2 values (default,#{vo.nickName},#{vo.title},#{vo.email},#{vo.homePage},#{vo.content},default,#{vo.hostIp},default,default,#{vo.mid});
+	</insert>
+	<insert id="newGoodDbCheck">
+		insert into good values (default,#{vo.part},#{vo.partIdx},#{vo.mid},default);
+	</insert>
+	<insert id="setBoardReplyInput">
+		insert into boardReply2 values (default,#{replyVo.boardIdx},#{replyVo.mid},#{replyVo.nickName},default,#{replyVo.hostIp},#{replyVo.content},default,#{replyVo.levelOrder});
+	</insert>
+	<insert id="setBoardReplyInput2">
+		insert into boardReply2 values (default,#{replyVo.boardIdx},#{replyVo.mid},#{replyVo.nickName},default,#{replyVo.hostIp},#{replyVo.content},#{replyVo.level},#{replyVo.levelOrder});
+	</insert>
+
+	<delete id="setBoardDeleteOk">
+		delete from board2 where idx = #{idx};
+	</delete>
+	<delete id="setBoardReplyDeleteOk">
+		delete from boardReply2 where idx = #{idx};
+	</delete>
+
+</mapper>

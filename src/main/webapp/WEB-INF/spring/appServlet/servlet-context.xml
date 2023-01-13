@@ -18,9 +18,11 @@
 	<resources mapping="/css/**" location="/resources/css/" />
 	<resources mapping="/resources/**" location="/resources/" />
 	<resources mapping="/images/**" location="/resources/images/" />
-	<resources mapping="/baord/**" location="/resources/board/" />
+	<resources mapping="/board/**" location="/resources/data/board/" />
 	<resources mapping="/pds/**" location="/resources/pds/" />
 	<resources mapping="/member/**" location="/resources/member/" />
+	<resources mapping="/ckeditor/**" location="/resources/ckeditor/" />
+	<resources mapping="/data/**" location="/resources/data/" />
 
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -33,6 +35,13 @@
 	<!-- BCryptPasswordEncoder 객체를 위한 Bean 등록 -->
 	<beans:bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 	
+	<!-- 파일 업로드에 필요한 라이브러리를 Bean으로 등록(업로드 최대용량 20MByte)-->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="maxUploadSize" value="20971520"/>
+		<beans:property name="defaultEncoding" value="utf-9"/>
+	</beans:bean>
+	
+	
 	<!-- interceptor 설정 -->
 	<beans:bean id="level4Interceptor" class="com.spring.javawspring.interceptor.Level4Interceptor"/> <!-- 비회원 불허 -->
 	<beans:bean id="level3Interceptor" class="com.spring.javawspring.interceptor.Level3Interceptor"/> <!-- 비회원/준회원 불허 -->
@@ -40,17 +49,23 @@
 	<interceptors>
 		<interceptor>
 			<mapping path="/member/**"/>
+			<exclude-mapping path="/board/boardList"/>
+			<exclude-mapping path="/member/memberPwdSearch"/>
+			<exclude-mapping path="/member/memberMain"/>
 			<exclude-mapping path="/member/memberList"/>
 			<exclude-mapping path="/member/memberLogin"/>
 			<exclude-mapping path="/member/memberLogOut"/>
 			<exclude-mapping path="/member/memberJoin"/>
+			<exclude-mapping path="/member/memberPwdUpdate"/>
 			<exclude-mapping path="/member/memberIdCheck"/>
 			<exclude-mapping path="/member/memberNickNameCheck"/>
 			<beans:ref bean="level4Interceptor"/>
 		</interceptor>
 		<interceptor>
-			<mapping path="/board/boardList"/>
+			<mapping path="/study/**"/>
+			<mapping path="/board/**"/>
 			<mapping path="/member/memberList"/>
+			<exclude-mapping path="/board/boardList"/>
 			<beans:ref bean="level3Interceptor"/>
 		</interceptor>
 		<interceptor>

@@ -25,5 +25,9 @@ public interface MemberDAO {
 	public int totTermRecCnt(@Param("mid") String mid);
 
 	public ArrayList<MemberVO> getTermMemberList(@Param("startIndexNo") int startIndexNo,@Param("pageSize") int pageSize,@Param("mid") String mid);
+
+	public void setMemberPwdUpdate(@Param("mid") String mid,@Param("pwd") String pwd);
+
+	public void setMemberUpdate(@Param("vo") MemberVO vo);
 	
 }

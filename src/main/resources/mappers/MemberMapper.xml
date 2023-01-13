@@ -37,6 +37,13 @@
 	<update id="setMemTotalUpdate">
 		update member2 set lastDate=now(),todayCnt=#{todayCnt},visitCnt=visitCnt+1,point=#{nowTodayPoint} where mid=#{mid};
 	</update>
+	<update id="setMemberPwdUpdate">
+		update member2 set pwd=#{pwd} where mid=#{mid};
+	</update>
+	<update id="setMemberUpdate">
+		update member2 set nickName=#{vo.nickName},name=#{vo.name},gender=#{vo.gender},birthday=#{vo.birthday},tel=#{vo.tel},address=#{vo.address},email=#{vo.email},homePage=#{vo.homePage},job=#{vo.job},hobby=#{vo.hobby},photo=#{vo.photo},content=#{vo.content},userInfor=#{vo.userInfor} where mid=#{vo.mid};
+	
+	</update>
 	
 	<insert id="setMemberJoinOk">
 		insert into member2 values(default,#{vo.mid},#{vo.pwd},#{vo.nickName},#{vo.name},#{vo.gender},#{vo.birthday},#{vo.tel},#{vo.address},#{vo.email},#{vo.homePage},#{vo.job},#{vo.hobby},#{vo.photo},#{vo.content},#{vo.userInfor},default,default,default,default,default,default,default); 

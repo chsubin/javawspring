@@ -13,15 +13,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.javawspring.common.ARIAUtil;
 import com.spring.javawspring.common.SecurityUtil;
@@ -34,7 +33,6 @@ import com.spring.javawspring.vo.MemberVO;
 @Controller
 @RequestMapping("/study")
 public class StudyController {
-	
 	@Autowired
 	StudyService studyService;
 	
@@ -271,5 +269,20 @@ public class StudyController {
 		UUID uid=UUID.randomUUID();
 		return uid.toString();
 	}
+	
+	//파일업로드폼
+	@RequestMapping(value="/fileUpload/fileUploadForm",method = RequestMethod.GET)
+	public String fileUploadFormGet() {
+		return "study/fileUpload/fileUploadForm";
+	}
+	
+	//파일업로드처리하기
+	@RequestMapping(value="/fileUpload/fileUploadForm",method = RequestMethod.POST)
+	public String fileUploadFormPost(MultipartFile fName) {
+		int res = studyService.fileUpload(fName);
+		if(res==1) return "redirect:/msg/fileUploadOk";
+		return "redirect:/msg/fileUploadNo";
+	}
+	
 	
 }

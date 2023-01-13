@@ -3,6 +3,7 @@ package com.spring.javawspring.pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.spring.javawspring.dao.BoardDAO;
 import com.spring.javawspring.dao.GuestDAO;
 import com.spring.javawspring.dao.MemberDAO;
 
@@ -13,6 +14,9 @@ public class PageProcess {
 	
 	@Autowired
 	MemberDAO memberDAO;
+	
+	@Autowired
+	BoardDAO boardDAO;
 
 	public PageVO totRecCnt(int pag, int pageSize, String section, String part, String search) {
 		PageVO pageVO= new PageVO();
@@ -23,6 +27,15 @@ public class PageProcess {
 		}
 		else if(section.equals("guest")) {
 			totRecCnt =guestDAO.totRecCnt();
+		}
+		else if(section.equals("guest")) {
+			totRecCnt =guestDAO.totRecCnt();
+		}
+		else if(section.equals("board")) {
+			totRecCnt =boardDAO.totRecCnt();
+			if(!part.equals("")) {
+				totRecCnt= boardDAO.totSearchCnt(part,search);
+			}
 		}
 		
 		int totPage = (totRecCnt % pageSize)==0 ? totRecCnt / pageSize : (totRecCnt / pageSize) + 1;
