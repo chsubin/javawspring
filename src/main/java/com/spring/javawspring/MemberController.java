@@ -105,7 +105,6 @@ public class MemberController {
 				return "redirect:/msg/memberLoginOk?mid="+mid;
 			}
 			else {
-				System.out.println("9090909090");
 				return "redirect:/msg/memberLoginNo";
 			}
 		}
